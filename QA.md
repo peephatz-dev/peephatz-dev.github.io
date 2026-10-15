@@ -1,5 +1,18 @@
 # Verification · 15 October 2026 · Next.js redesign
 
+## Floating Cloud Orbit update
+
+- Production `npm run build` passes with TypeScript and static generation.
+- In-app browser inspected at portrait viewport overrides 390 × 844 and 320 × 568. No horizontal page overflow in either; seven original projects are present.
+- Pointer dragging advances the orbit; keyboard End reaches project 07 / 07 and settles at 100% explored. Home returns to project 01 / 07 and 0%. Intermediate progress changes during spring movement rather than jumping immediately to the target.
+- All three cloud banks report independent running animations. Pause changes all three to paused. Mobile portrait has zero WebGL canvases.
+- The active PowerGuard card's detail control opens its existing native dialog with the correct title and links, then closes successfully. Existing data and destination URLs are unchanged.
+- At desktop viewport override 1440 × 1000, the mobile component unmounts and the existing hero, original heading, and desktop layout remain.
+- Screenshot: `preview-mobile-orbit.png`. Browser viewport override reset after checks.
+- Reduced-motion and sensor permission paths reviewed in source. Physical iPhone Safari, actual touch hardware, sensor permission prompts, and low-end device frame timing were not tested. Final small-screen adjustment adds extra separation around the card and gesture hint.
+
+## Earlier desktop and portfolio checks
+
 - `npm run typecheck` passes.
 - `npm run build` succeeds and emits the production static export in `out/` (Next.js 16.4.1).
 - Production export served over HTTP and inspected in the in-app browser.

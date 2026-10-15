@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic';
 import { motion, MotionConfig, useInView, useReducedMotion, useSpring, useTransform } from 'framer-motion';
 import { ArrowDownRight, ArrowLeft, ArrowRight, ArrowUpRight, Check, Copy, Hand, MapPin, Pause, Play, Plus, Sparkles, X } from 'lucide-react';
 import ProjectArtwork from './ProjectArtwork';
+import MobileCloudOrbit from './MobileCloudOrbit';
 import { EMAIL, LINKEDIN, projects, type Category, type Project } from '@/lib/projects';
 
 const OrbitScene = dynamic(() => import('./OrbitScene'), { ssr: false });
@@ -61,6 +62,7 @@ export default function Portfolio() {
   const [pageVisible,setPageVisible]=useState(true);
   const [paused,setPaused]=useState(false);
   const [canRender3D,setCanRender3D]=useState(false);
+  const [mobilePortrait,setMobilePortrait]=useState(false);
   const [sceneReady,setSceneReady]=useState(false);
   const [sceneFailed,setSceneFailed]=useState(false);
   const [orbitStep,setOrbitStep]=useState(0);
@@ -82,8 +84,10 @@ export default function Portfolio() {
   useEffect(()=>{
     const visibility=()=>setPageVisible(!document.hidden);
     visibility();document.addEventListener('visibilitychange',visibility);
-    setCanRender3D(typeof WebGL2RenderingContext!=='undefined');
-    return ()=>document.removeEventListener('visibilitychange',visibility);
+    const media=window.matchMedia('(max-width: 800px) and (orientation: portrait)');
+    const update=()=>{setMobilePortrait(media.matches);setCanRender3D(!media.matches&&typeof WebGL2RenderingContext!=='undefined');};
+    update();media.addEventListener('change',update);
+    return ()=>{document.removeEventListener('visibilitychange',visibility);media.removeEventListener('change',update);};
   },[]);
   useEffect(()=>{
     if(!moving){px.set(0);py.set(0);}
@@ -121,7 +125,8 @@ export default function Portfolio() {
   }
   const filtered=projects.filter(item=>filter==='all'||item.category===filter);
   return <MotionConfig reducedMotion="user">
-    <a className="skip-link" href="#links">Skip to links</a>
+    <a className="skip-link" href={mobilePortrait?'#mobile-projects':'#links'}>Skip to links</a>
+    {mobilePortrait&&<MobileCloudOrbit onProject={openProject} />}
     <section className={`hero ${moving?'motion-active':'motion-inactive'} ${paused?'motion-paused':''}`} id="home" ref={hero} onPointerMove={parallax} onPointerLeave={()=>{px.set(0);py.set(0);}} aria-labelledby="hero-heading">
       <motion.div className="sky-background" style={{x:skyX,y:skyY}}><Image src="/assets/sky.webp" alt="" fill priority sizes="100vw" /></motion.div>
       <div className="hero-scrim" />

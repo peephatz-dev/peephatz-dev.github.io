@@ -1,0 +1,96 @@
+/* Portrait-only sky world. Desktop and landscape retain their existing styles. */
+.mobile-cloud-orbit { display: none; }
+@media (max-width: 800px) and (orientation: portrait) {
+  .hero { display: none; }
+  .mobile-cloud-orbit {
+    --orbit-blue: #124de6;
+    --orbit-rise: min(28vw, 13dvh);
+    position: relative; display: block; isolation: isolate; height: 100dvh;
+    min-height: 560px; overflow: hidden; overflow: clip;
+    background: #a9d4f6; color: #142d50;
+  }
+  .cloud-atmosphere { position: absolute; inset: -20px; z-index: -2; pointer-events: none; }
+  .cloud-sky { position: absolute; inset: -3%; background: linear-gradient(#4d9bdb12,#b5d9f433), url('/assets/sky.webp') 50% 0 / auto 160% no-repeat; animation: cloud-sky-drift 65s ease-in-out infinite alternate; }
+  .cloud-sunlight { position: absolute; inset: 0; background: radial-gradient(ellipse at 85% 12%,#ffffff9c,transparent 50%),linear-gradient(0deg,#e0efff 0%,transparent 35%); }
+  .cloud-bank { position: absolute; background: url('/assets/sky.webp') no-repeat; pointer-events: none; will-change: transform; }
+  .cloud-bank-far { top: 14%; left: -60%; width: 175%; height: 48%; background-size: 180% auto; background-position: 100% 48%; opacity: .65; mask-image: radial-gradient(ellipse at 75% 55%,#000 10%,transparent 68%); animation: cloud-far-drift 48s ease-in-out infinite alternate; }
+  .cloud-bank-middle { left: -35%; bottom: 10%; width: 170%; height: 55%; background-size: 220% auto; background-position: 0 32%; mask-image: linear-gradient(transparent,#000 35%,#000 70%,transparent); animation: cloud-middle-drift 32s ease-in-out infinite alternate; }
+  .cloud-header { position: absolute; top: max(17px,env(safe-area-inset-top)); left: 6%; right: 6%; display: flex; align-items: center; justify-content: space-between; z-index: 6; }
+  .cloud-wordmark { font-family: var(--font-display); font-size: 20px; font-weight: 800; letter-spacing: -1.1px; display: flex; align-items: baseline; min-height: 44px; padding-top: 10px; }
+  .cloud-wordmark > span { font-weight: 500; }
+  .cloud-wordmark > i { width: 5px; height: 5px; border-radius: 50%; background: var(--orbit-blue); margin-left: 3px; }
+  .cloud-header-actions { display: flex; gap: 8px; }
+  .cloud-header-actions > * { width: 44px; height: 44px; display: grid; place-items: center; border: 1px solid #ffffffb8; border-radius: 50%; background: #edf6ff59; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+  .cloud-header-actions svg { width: 18px; height: 18px; }
+  .cloud-header-actions a { background: var(--orbit-blue); color: white; border-color: #6d9aff; box-shadow: inset 0 1px 1px #ffffff75,0 4px 12px #123c8c20; }
+  .cloud-intro { position: absolute; top: 10%; left: 8%; z-index: 2; pointer-events: none; }
+  .cloud-intro > p { font-size: 10px; margin: 0 0 7px; font-weight: 500; }
+  .cloud-intro > h1 { font-family: var(--font-display); font-size: clamp(28px,8.4vw,47px); font-weight: 700; line-height: .98; letter-spacing: -1.8px; margin: 0; }
+  .cloud-orbit-guide { position: absolute; top: 64%; left: 50%; width: 200vw; height: min(56vw, 26dvh); border: 1px solid #ffffff90; border-radius: 50%; transform: translate(-50%,-50%); box-shadow: 0 1px 0 #4974a51c,inset 0 1px 0 #ffffff52; pointer-events: none; }
+  .cloud-wheel { position: absolute; inset: 20% 0 17%; touch-action: pinch-zoom; cursor: grab; z-index: 3; outline-offset: -7px; }
+  .cloud-wheel:active { cursor: grabbing; }
+  .cloud-card { position: absolute; left: 50%; top: calc(44 / 63 * 100%); width: 82vw; height: 60dvh; display: flex; flex-direction: column; padding: 8px; border-radius: 28px; border: 1px solid #ffffffed; background: linear-gradient(145deg,#f9fcffeb,#e8f2ffdb 70%,#dceafaef); box-shadow: inset 0 0 0 2px #ffffff5c,1px 3px 0 #8bacc655,0 22px 45px -12px #193b733d; will-change: transform; user-select: none; -webkit-user-select: none; }
+  .cloud-card.is-active { box-shadow: inset 0 0 0 2px #ffffff8c,1px 3px 0 #8bacc655,0 24px 44px -12px #193b7352; }
+  .cloud-card-art { position: relative; flex: 1 1 43%; min-height: 90px; overflow: hidden; border-radius: 21px 21px 12px 12px; }
+  .cloud-card .cloud-card-art > .project-art { width: 100%; height: 100%; border-radius: inherit; }
+  .cloud-card-art .art-spark { display: none; }
+  .cloud-card-number { position: absolute; left: 12px; top: 12px; display: grid; place-items: center; width: 30px; height: 30px; font-size: 10px; font-weight: 600; border: 1px solid #ffffff80; border-radius: 50%; color: #172c4a; background: #ffffffd9; }
+  .cloud-card-body { flex: 0 0 auto; padding: 17px 14px 10px; }
+  .cloud-card-type { color: #395b7b; font-size: 10px; display: block; margin-bottom: 7px; }
+  .cloud-card h2 { font-family: var(--font-display); font-size: clamp(23px,6.8vw,36px); line-height: 1.02; letter-spacing: -1.2px; font-weight: 700; margin: 0 0 10px; }
+  .cloud-card p { font-size: 12px; line-height: 1.55; color: #3d536f; margin: 0 0 13px; }
+  .cloud-card-impact { font-size: 10px; line-height: 1.4; color: #244d84; padding: 9px 0 12px; border-top: 1px solid #9cb9d24d; }
+  .cloud-card-actions { display: flex; align-items: center; gap: 8px; }
+  .cloud-card-actions > a { display: flex; flex: 1; align-items: center; justify-content: space-between; min-height: 44px; padding: 12px 14px; border-radius: 50px; font-size: 12px; font-weight: 500; color: white; background: var(--orbit-blue); box-shadow: inset 0 1px 1px #ffffff66,0 4px 10px #204de61a; }
+  .cloud-card-actions > button { display: grid; place-items: center; width: 44px; height: 44px; flex: 0 0 44px; background: #f9fcffb3; border: 1px solid #b5cbe3; border-radius: 50%; }
+  .cloud-card-actions svg { width: 18px; height: 18px; }
+  .cloud-foreground { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+  .cloud-bank-near { top: 78%; left: -60%; width: 210%; height: 15%; background-size: 110% auto; background-position: 65% 60%; opacity: .82; mask-image: radial-gradient(ellipse at 25% 75%,#000 10%,transparent 62%); animation: cloud-near-drift 23s ease-in-out infinite alternate; }
+  .cloud-navigation { position: absolute; bottom: max(6px,env(safe-area-inset-bottom)); left: 6%; right: 6%; z-index: 5; }
+  .cloud-gesture { display: flex; align-items: center; justify-content: center; gap: 7px; font-size: 10px; margin-bottom: 9px; color: #27486b; }
+  .cloud-gesture svg { width: 17px; height: 17px; }
+  .cloud-progress-panel { display: flex; align-items: center; gap: 9px; padding: 6px; border: 1px solid #ffffffeb; border-radius: 50px; background: #f3f9ff9e; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: inset 0 1px 0 white,0 8px 25px #24477712; }
+  .cloud-step { width: 44px; height: 44px; flex: 0 0 44px; display: grid; place-items: center; border-radius: 50%; background: #f7fbff; border: 1px solid #aec5dd66; }
+  .cloud-step:disabled { opacity: .35; }
+  .cloud-step svg { width: 17px; height: 17px; }
+  .cloud-progress-copy { flex: 1; min-width: 0; }
+  .cloud-progress-copy > div:first-child { display: flex; align-items: baseline; justify-content: space-between; gap: 4px; margin: 0 0 7px; }
+  .cloud-index { font-size: 17px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; animation: cloud-number-in .2s ease-out; }
+  .cloud-index > span { color: #4c6480; font-size: 10px; font-weight: 400; }
+  .cloud-percentage { font-size: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: .25px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .cloud-progress-track { height: 3px; border-radius: 3px; background: #7495b52e; overflow: hidden; }
+  .cloud-progress-track > div { height: 100%; background: var(--orbit-blue); transform-origin: left; }
+  .cloud-bottom { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-top: 2px; }
+  .cloud-bottom > * { min-height: 44px; display: inline-flex; align-items: center; gap: 5px; font-size: 10px; background: transparent; padding: 0 3px; }
+  .cloud-bottom svg { width: 13px; height: 13px; }
+  .cloud-bottom button:disabled { opacity: .6; }
+  .clouds-paused .cloud-bank,.clouds-paused .cloud-sky { animation-play-state: paused; }
+  @keyframes cloud-sky-drift { from { transform: translateX(-2%) scale(1.04); } to { transform: translateX(2%) scale(1.09); } }
+  @keyframes cloud-far-drift { from { transform: translate3d(-4%,0,0); } to { transform: translate3d(8%,-10px,0); } }
+  @keyframes cloud-middle-drift { from { transform: translate3d(6%,5px,0); } to { transform: translate3d(-7%,-12px,0); } }
+  @keyframes cloud-near-drift { from { transform: translate3d(-16%,4px,0); } to { transform: translate3d(20%,-8px,0); } }
+  @keyframes cloud-number-in { from { opacity: .45; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
+}
+@media (max-width: 800px) and (orientation: portrait) and (max-height: 740px) {
+  .cloud-intro { top: 10.5%; }
+  .cloud-intro > h1 { font-size: 29px; }
+  .cloud-intro > p { font-size: 9px; margin-bottom: 5px; }
+  .cloud-card { height: 58dvh; border-radius: 24px; }
+  .cloud-card-body { padding: 12px 11px 6px; }
+  .cloud-card-type { font-size: 9px; margin-bottom: 5px; }
+  .cloud-card h2 { font-size: 23px; margin-bottom: 7px; }
+  .cloud-card p { font-size: 11px; line-height: 1.4; margin-bottom: 8px; }
+  .cloud-card-impact { padding: 7px 0 9px; font-size: 9px; }
+  .cloud-gesture { margin-bottom: 5px; font-size: 9px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mobile-cloud-orbit .cloud-bank,.mobile-cloud-orbit .cloud-sky,.mobile-cloud-orbit .cloud-index { animation: none; will-change: auto; }
+}
+@media (max-width: 800px) and (orientation: portrait) and (max-height: 620px) {
+  .cloud-intro > h1 { font-size: 24px; letter-spacing: -1px; }
+  .mobile-cloud-orbit { --orbit-rise: 14dvh; }
+  .cloud-card { height: 52dvh; }
+  .cloud-card-art { min-height: 60px; }
+  .cloud-card h2 { font-size: 21px; }
+  .cloud-gesture { font-size: 8px; }
+}

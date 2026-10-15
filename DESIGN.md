@@ -4,7 +4,15 @@ A personal link hub for a first-year KMUTT builder. The primary task is discover
 
 Ice #EDF3FC, Cloud #F8FAFF, Ink #111D37, Cobalt #1550ED, Slate #52627E, Chrome #BAC8DD. Syne display typography, DM Sans UI, and Noto Sans Thai fallback. The supplied reference guides the airy sky, reflection, glass fan, perspective angles, and chrome orbit composition.
 
-Desktop places the introduction on the left and an interactive sculpture on the right, above five glass links. Mobile places the sculpture below the introduction and uses a two-column link grid. The seven-project section includes native detail dialogs and category filters. Navigation and every destination remain usable without dragging.
+Desktop places the introduction on the left and an interactive sculpture on the right, above five glass links. Desktop and landscape keep the original layout. Portrait screens up to 800px use a separate Floating Cloud Orbit hero. The seven-project section includes native detail dialogs and category filters. Navigation and every destination remain usable without dragging.
+
+## Mobile portrait: Floating Cloud Orbit
+
+Experience mode. Sky #A9D4F6, Ice #F3F9FF, Ink #142D50, Electric blue #124DE6, chrome borders #B5CBE3. Syne carries the oversized introduction and project titles; DM Sans keeps descriptions readable. One 82vw × 60dvh glass project card dominates the center, with neighboring artwork peeking at the edges. Short screens progressively reduce card height to preserve text and navigation. The wheel is a 200vw circle projected into the sky plane, centered at 64% of the viewport height; cards translate and scale without rotating their text.
+
+Seven original projects form a finite 276° sequence with 46° spacing. Pointer input uses atan2 around the orbit center, unwraps the ±π seam, estimates recent angular velocity, projects inertia, and springs to the nearest project. Clamped angular position / 276° drives the live exploration number and progress track: the first project is 0%, the last is 100%. It never loops or reports a synthetic loading percentage. Arrow buttons and ArrowLeft/ArrowRight/Home/End provide alternatives to dragging; inactive cards are inert. Dragging suppresses accidental link activation while taps retain normal navigation.
+
+The existing 91KB sky image supplies the backdrop and three masked photographic cloud layers. Independent transform animations drift at 48, 32, and 23 seconds; foreground clouds pass across the lower card edge without intercepting input. Touch and optional device orientation add spring parallax. Device orientation permission is requested only from Enable tilt; denied or unsupported sensors leave touch navigation available. Cloud playback pauses on user request, offscreen, when the document is hidden, and under prefers-reduced-motion. Reduced motion also removes snapping inertia. Mobile portrait does not mount the desktop WebGL scene.
 
 ## Real assets
 
