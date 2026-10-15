@@ -1,14 +1,16 @@
-# Verification · 15 October 2026
+# Verification · 15 October 2026 · Next.js redesign
 
-- Served the buildless site successfully over HTTP (200).
-- JavaScript syntax check passes.
-- HTML unique IDs, anchor targets, and local file references pass.
-- Six project cards render; the category filters return the correct two entries each and restore all six.
-- All six detail dialogs open, receive close-button focus, remain within the mobile viewport, and close using the close button. Escape also closes the dialog.
-- The AI dialog includes the correct prototype and project destinations and clearly describes its competition status.
-- Email copy invokes the native clipboard API and shows success feedback. The browser automation's separate clipboard read returned empty, so copied contents could not be independently inspected through that surface.
-- No horizontal page overflow at measured CSS widths 320, 390, and 1440.
-- Image assets finish loading. Desktop and mobile layouts visually reviewed in the in-app browser.
-- External destinations reproduce supplied links; LinkedIn shortened destinations were not independently resolved.
+- `npm run typecheck` passes.
+- `npm run build` succeeds and emits the production static export in `out/` (Next.js 16.4.1).
+- Production export served over HTTP and inspected in the in-app browser.
+- Seven project cards render. Products / AI & learning / Community return 2 / 2 / 3 cards; Everything restores 7.
+- All seven dialogs open with their correct project title and supplied destinations, fit the measured 320px viewport, and close with the close button. Escape closes the dialog and restores focus to the opener.
+- Copy email invokes the clipboard API and shows success feedback. Automation's separate clipboard surface has not independently verified the pasted contents.
+- No horizontal page overflow at measured CSS widths 320, 390, and 1440. Header action bounds fit at 320px. Mobile sculpture now starts below the introduction rather than behind its text.
+- WebGL canvas loads and the static poster switches to the interactive sculpture. Rotation controls change the featured link order. Pause toggles its accessible pressed state and Play/Pause label.
+- Desktop and mobile compositions visually inspected. Actual user logos are used. Large logo WebP derivatives reduce download size; below-fold images are lazy-loaded.
+- Reduced-motion CSS and Framer Motion preference support were reviewed in source. An OS-level reduced-motion emulation was not performed in this browser.
+- Browser emitted a Three.js Clock deprecation warning from the rendering dependency, without blocking the scene.
+- Original LinkedIn short URLs are preserved. Their redirect destinations were not independently verified.
 
-Responsive test dimensions are measured in page CSS pixels; the in-app viewport controls apply a display scale.
+Responsive viewport controls apply a display scale; dimensions above use the measured page CSS width.
