@@ -1,24 +1,16 @@
 'use client';
 
 import { Suspense, useEffect, useMemo, useRef } from 'react';
-import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Environment, Lightformer, OrbitControls } from '@react-three/drei';
-import { FontLoader } from 'three/addons/loaders/FontLoader.js';
-import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 import { Group, MeshStandardMaterial, MathUtils } from 'three';
 
 function Sculpture({ playing, onReady, onFailure }: { playing: boolean; onReady: () => void; onFailure: () => void }) {
   const rings = useRef<Group>(null);
   const letter = useRef<Group>(null);
-  const font = useLoader(FontLoader, '/assets/helvetiker_regular.typeface.json');
   const { invalidate, gl } = useThree();
-  const geometry = useMemo(() => {
-    const shape = new TextGeometry('p', { font, size: 2.35, depth: .4, curveSegments: 18, bevelEnabled: true, bevelThickness: .2, bevelSize: .17, bevelSegments: 8 });
-    shape.center();
-    return shape;
-  }, [font]);
   const chrome = useMemo(() => new MeshStandardMaterial({ color: '#f0f5ff', metalness: 1, roughness: .12, envMapIntensity: 1.5 }), []);
-  useEffect(() => () => { geometry.dispose(); chrome.dispose(); }, [geometry, chrome]);
+  useEffect(() => () => { chrome.dispose(); }, [chrome]);
   useEffect(() => {
     const timer = setTimeout(onReady, 250);
     const canvas = gl.domElement;
@@ -41,8 +33,8 @@ function Sculpture({ playing, onReady, onFailure }: { playing: boolean; onReady:
   });
   return <>
     <Environment resolution={128} frames={1} background={false}>
-      <color attach="background" args={['#a7bdd9']} />
-      <Lightformer form="rect" intensity={3} color="white" scale={[9, 2.5, 1]} position={[0, 1.5, 6]} />
+      <color attach="background" args={['#778ca9']} />
+      <Lightformer form="rect" intensity={3} color="white" scale={[9, 1.5, 1]} position={[0, 2, 6]} />
       <Lightformer form="rect" intensity={5} color="white" scale={[8, 3, 1]} position={[-4, 4, 4]} rotation-y={.5} />
       <Lightformer form="rect" intensity={2} color="#d9eeff" scale={[3, 8, 1]} position={[4, 1, -2]} rotation-y={-Math.PI / 2} />
       <Lightformer form="ring" intensity={3} color="white" scale={5} position={[0, -3, 4]} rotation-x={.5} />
@@ -50,12 +42,25 @@ function Sculpture({ playing, onReady, onFailure }: { playing: boolean; onReady:
       <Lightformer form="rect" intensity={.1} color="#132039" scale={[10, 1.5, 1]} position={[0, -1.5, 5]} />
     </Environment>
     <group rotation={[.04, -.3, .02]}>
-      <group ref={letter}><mesh geometry={geometry} material={chrome} position={[0, .1, 0]} /></group>
+      <group ref={letter} position={[.1, 0, 0]}>
+        <mesh position={[-.65, -.15, 0]} material={chrome}><capsuleGeometry args={[.28, 2.15, 12, 32]} /></mesh>
+        <mesh position={[.06, .58, 0]} material={chrome}><torusGeometry args={[.71, .28, 24, 80]} /></mesh>
+      </group>
       <mesh>
         <sphereGeometry args={[2.1, 56, 40]} />
-        <meshPhysicalMaterial color="#e7f4ff" opacity={.1} transparent depthWrite={false} roughness={.025} metalness={.1} ior={1.5} envMapIntensity={2} clearcoat={1} clearcoatRoughness={.02} />
+        <meshPhysicalMaterial color="#e7f4ff" opacity={.16} transparent depthWrite={false} roughness={.025} metalness={.1} ior={1.5} envMapIntensity={2} clearcoat={1} clearcoatRoughness={.02} />
       </mesh>
-      <mesh material={chrome}><torusGeometry args={[2.1, .014, 8, 128]} /></mesh>
+      <mesh renderOrder={2}>
+        <sphereGeometry args={[2.108, 48, 32]} />
+        <shaderMaterial transparent depthWrite={false} vertexShader={`
+          varying vec3 vNormal; varying vec3 vView;
+          void main(){ vec4 p=modelViewMatrix*vec4(position,1.0); vNormal=normalize(normalMatrix*normal); vView=normalize(-p.xyz); gl_Position=projectionMatrix*p; }
+        `} fragmentShader={`
+          varying vec3 vNormal; varying vec3 vView;
+          void main(){ vec3 n=normalize(vNormal); float f=pow(1.0-max(dot(n,normalize(vView)),0.0),3.0); float glint=pow(max(dot(n,normalize(vec3(-.5,.65,1.0))),0.0),75.0); gl_FragColor=vec4(mix(vec3(.52,.72,1.0),vec3(1.0),f+glint),.025+f*.46+glint*.55); }
+        `}/>
+      </mesh>
+      <mesh material={chrome}><torusGeometry args={[2.1, .018, 8, 128]} /></mesh>
       <mesh rotation={[Math.PI / 2, 0, 0]} material={chrome}><torusGeometry args={[2.115, .025, 10, 128]} /></mesh>
       <group ref={rings}>
         <mesh rotation={[1.1, .2, -.35]} material={chrome}><torusGeometry args={[2.68, .028, 10, 128]} /></mesh>

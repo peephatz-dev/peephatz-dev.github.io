@@ -10,7 +10,7 @@ Desktop places the introduction on the left and an interactive sculpture on the 
 
 MODHEW, Mitsubishi Electric, S&P, and Sam Hao use the exact user-supplied artwork. WebP derivatives reduce transfer size without replacing project visuals. Originals remain in `public/assets/`. The PowerGuard preview is the project's own coastal-community illustration from https://peephatz-dev.github.io/community-field-notes/energy-platform/powerguard/scenes/coastal-community.png. Its community link is reproduced as provided by the user. The linked prototype has an engineer 3D mode; the portfolio does not claim a live monitoring deployment.
 
-The 3D lowercase p is TextGeometry using the Three.js Helvetiker font. The font JSON preserves its original Magenta license information. Chrome materials reflect a local generated studio-light environment; no external HDR download is required. Geometry is shared and disposed on unmount, environment capture occurs once, DPR is capped at 1.5, and rendering pauses when the hero or document is hidden. A static generated-art fallback covers unsupported WebGL and reduced-motion preference.
+The rounded 3D lowercase p is assembled from capsule and torus geometry so highlights flow around curved chrome surfaces. A transparent Fresnel shell adds edge reflections to the glass sphere. Chrome materials reflect a local generated studio-light environment; no external HDR download is required. Geometry is shared and disposed on unmount, environment capture occurs once, DPR is capped at 1.5, the sky slowly zooms from 1 to 1.12 over 45 seconds and returns over 45 seconds, and rendering pauses when the hero or document is hidden. A static generated-art fallback covers unsupported WebGL and reduced-motion preference.
 
 ## Generated assets
 

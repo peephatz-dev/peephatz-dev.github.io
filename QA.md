@@ -14,3 +14,5 @@
 - Original LinkedIn short URLs are preserved. Their redirect destinations were not independently verified.
 
 Responsive viewport controls apply a display scale; dimensions above use the measured page CSS width.
+
+Follow-up visual adjustment: replaced flat text extrusion with rounded chrome capsule/torus geometry and added a Fresnel glass shell. Added a 90-second sky zoom cycle (45s in / 45s out). Browser computed styles confirm the zoom transform progresses, pauses with the motion control, and resumes. Typecheck and production build pass after this change.
