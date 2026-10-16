@@ -11,6 +11,9 @@ type Options = {
 };
 type Gesture = Sample & { id: number; startX: number; startY: number; lastX: number; time: number; horizontal: boolean; element: HTMLElement };
 const interactive = 'a,button,input,textarea,select,summary,[contenteditable="true"],[role="button"]';
+function isGestureSurfaceTarget(target: EventTarget | null) {
+  return target instanceof Element && target.closest('[data-orbit-card="true"]');
+}
 
 /** No document listeners, wheel listeners or pointer preventDefault. CSS owns vertical panning. */
 export function useHorizontalGesture(options: Options) {
@@ -29,7 +32,7 @@ export function useHorizontalGesture(options: Options) {
 
   function onPointerDown(event: PointerEvent<HTMLElement>) {
     suppressUntil.current = 0;
-    if (!event.isPrimary || event.button !== 0 || (event.target as Element).closest(interactive)) return;
+    if (!event.isPrimary || event.button !== 0 || ((event.target as Element).closest(interactive) && !isGestureSurfaceTarget(event.target))) return;
     const element = event.currentTarget;
     // A single layout read at pointerdown; moves use cached width and offsets.
     gesture.current = { id: event.pointerId, startX: event.clientX, startY: event.clientY, lastX: event.clientX, time: performance.now(), horizontal: false, element,
@@ -73,7 +76,7 @@ export function useHorizontalGesture(options: Options) {
     onLostPointerCapture: (event: PointerEvent<HTMLElement>) => finish(event, true),
     onPointerLeave: (event: PointerEvent<HTMLElement>) => { if (gesture.current && !event.currentTarget.hasPointerCapture?.(event.pointerId)) finish(event, true); },
     onClickCapture: (event: MouseEvent<HTMLElement>) => {
-      if (event.detail > 0 && performance.now() < suppressUntil.current && !(event.target as Element).closest(interactive)) {
+      if (event.detail > 0 && performance.now() < suppressUntil.current && (isGestureSurfaceTarget(event.target) || !(event.target as Element).closest(interactive))) {
         event.preventDefault(); event.stopPropagation();
       }
     },

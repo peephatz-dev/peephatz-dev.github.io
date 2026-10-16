@@ -130,7 +130,7 @@ function StaticOrbitFallback({ active, onOpen }: { active: number; onOpen: (inde
     {orbitLinks.map((link, index) => {
       const raw=(index-active+orbitLinks.length)%orbitLinks.length;
       const offset=raw>orbitLinks.length/2?raw-orbitLinks.length:raw;
-      return <button key={link.id} type="button" className={`static-orbit-card static-orbit-card-${offset}`} onClick={()=>onOpen(index)} aria-label={`View ${link.title} details`}>
+      return <button key={link.id} type="button" data-orbit-card="true" className={`static-orbit-card static-orbit-card-${offset}`} onClick={()=>onOpen(index)} aria-label={`View ${link.title} details`}>
         <span className="static-orbit-card-number">{String(index+1).padStart(2,'0')}</span>
         <span className={`static-orbit-card-art static-orbit-card-art-${link.id}`}>{link.image?<img src={link.image} alt="" />:<span aria-hidden="true">{link.id==='github'?'<>':link.id==='contact'?'@':'p'}</span>}</span>
         <span className="static-orbit-card-copy"><strong>{link.title}</strong><small>{link.subtitle}</small><em>{link.description}</em></span>
