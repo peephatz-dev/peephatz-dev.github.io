@@ -29,3 +29,7 @@
 Responsive viewport controls apply a display scale; dimensions above use the measured page CSS width.
 
 Follow-up visual adjustment: replaced flat text extrusion with rounded chrome capsule/torus geometry and added a Fresnel glass shell. Added a 90-second sky zoom cycle (45s in / 45s out). Browser computed styles confirm the zoom transform progresses, pauses with the motion control, and resumes. Typecheck and production build pass after this change.
+
+## Native scroll and gesture refactor — 16 October 2026
+
+See `SCROLL-AUDIT.md` for the before/after findings, changed files, measured scroll behavior, browser coverage, and explicit device-test limitations. Gesture regression tests, TypeScript, and production export pass. The refactor removes mobile vertical-scroll interception, replaces Three.js OrbitControls, and lets portrait card content grow in the document rather than being clipped in a fixed-height hero.

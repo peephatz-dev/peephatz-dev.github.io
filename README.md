@@ -14,6 +14,7 @@ npm run dev
 Open http://127.0.0.1:4173/. To validate and export:
 
 ```sh
+npm run test:gestures
 npm run typecheck
 npm run build
 python3 -m http.server 4173 --bind 127.0.0.1 --directory out
@@ -31,11 +32,11 @@ python3 -m http.server 4173 --bind 127.0.0.1 --directory out
 
 All six original project records and their destinations are retained. Sala Hum PowerGuard adds the supplied community energy project as a seventh record. Original LinkedIn short links remain unchanged; final destinations are not independently verified. Competition, learning, and simulated-data prototypes are identified in the project details.
 
-The hero supports sphere dragging, automatic orbiting, pointer parallax, card tilting, and rotating featured links with buttons or dragging the indicator. Narrow screens use a reading-order grid. Motion pauses offscreen and in background tabs; a pause control and reduced-motion preference disable decorative movement. Reduced-motion and unavailable WebGL use the static sculpture fallback. Dialogs support keyboard focus, Escape, and focus restoration.
+The hero supports sphere dragging, automatic orbiting, pointer parallax, card tilting, and rotating featured links with buttons or dragging the indicator. Mobile portrait uses a radial project carousel with horizontal-only swipe recognition and native vertical page scrolling. Cards grow with content; links and buttons are excluded from dragging. Motion pauses offscreen and in background tabs; a pause control and reduced-motion preference disable decorative movement. Reduced-motion and unavailable WebGL use the static sculpture fallback. Dialogs support keyboard focus, Escape, and focus restoration.
 
 ## Deployment
 
-Push `main` to `peephatz-dev/peephatz-dev.github.io`. `.github/workflows/deploy.yml` installs locked dependencies, typechecks, builds `out/`, and deploys it through GitHub Pages Actions. Pages uses the GitHub Actions source. Root hosting needs no base path. The `.nojekyll` asset is included in the export.
+Push `main` to `peephatz-dev/peephatz-dev.github.io`. `.github/workflows/deploy.yml` installs locked dependencies, runs gesture regression tests, typechecks, builds `out/`, and deploys it through GitHub Pages Actions. Pages uses the GitHub Actions source. Root hosting needs no base path. The `.nojekyll` asset is included in the export.
 
 `dist/` and `.openai/hosting.json` preserve the previous buildless Sites version; they are not used by the GitHub Pages workflow.
 

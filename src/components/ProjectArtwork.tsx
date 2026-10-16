@@ -12,7 +12,7 @@ export default function ProjectArtwork({ id, hero = false }: { id: string; hero?
   };
   const asset = artwork[id];
   return <div className={`project-art art-${id} ${hero ? 'art-hero' : ''}`}>
-    {asset ? <Image src={asset.src} alt={asset.alt} fill sizes={hero ? '(max-width: 700px) 45vw, 220px' : '(max-width: 700px) 90vw, 420px'} className="project-logo" loading={hero ? 'eager' : 'lazy'} /> : id === 'linkedin' ? <div className="linkedin-block"><Linkedin aria-hidden="true" /></div> : id === 'email' ? <div className="envelope-block"><Mail aria-hidden="true" /></div> : <div className="ai-chip"><Cpu aria-hidden="true" /><span>AI</span></div>}
+    {asset ? <Image src={asset.src} alt={asset.alt} fill draggable={false} sizes={hero ? '(max-width: 700px) 45vw, 220px' : '(max-width: 700px) 90vw, 420px'} className="project-logo" loading={hero ? 'eager' : 'lazy'} /> : id === 'linkedin' ? <div className="linkedin-block"><Linkedin aria-hidden="true" /></div> : id === 'email' ? <div className="envelope-block"><Mail aria-hidden="true" /></div> : <div className="ai-chip"><Cpu aria-hidden="true" /><span>AI</span></div>}
     {!hero && <Sparkles className="art-spark" aria-hidden="true" />}
   </div>;
 }

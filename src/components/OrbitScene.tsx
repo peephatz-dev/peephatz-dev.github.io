@@ -2,15 +2,21 @@
 
 import { Suspense, useEffect, useMemo, useRef } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Environment, Lightformer, OrbitControls } from '@react-three/drei';
+import { Environment, Lightformer } from '@react-three/drei';
+import type { MotionValue } from 'framer-motion';
 import { Group, MeshStandardMaterial, MathUtils } from 'three';
 
-function Sculpture({ playing, onReady, onFailure }: { playing: boolean; onReady: () => void; onFailure: () => void }) {
+function Sculpture({ playing, onReady, onFailure, rotation }: { playing: boolean; onReady: () => void; onFailure: () => void; rotation: MotionValue<number> }) {
+  const sculpture = useRef<Group>(null);
   const rings = useRef<Group>(null);
   const letter = useRef<Group>(null);
   const { invalidate, gl } = useThree();
   const chrome = useMemo(() => new MeshStandardMaterial({ color: '#f0f5ff', metalness: 1, roughness: .12, envMapIntensity: 1.5 }), []);
   useEffect(() => () => { chrome.dispose(); }, [chrome]);
+  useEffect(() => rotation.on('change', value => {
+    if (sculpture.current) sculpture.current.rotation.y = -.3 + value;
+    invalidate();
+  }), [rotation, invalidate]);
   useEffect(() => {
     const timer = setTimeout(onReady, 250);
     const canvas = gl.domElement;
@@ -41,7 +47,7 @@ function Sculpture({ playing, onReady, onFailure }: { playing: boolean; onReady:
       <Lightformer form="rect" intensity={3} color="#f1f7ff" scale={[1, 8, 1]} position={[-3, 0, 5]} rotation-z={-.35} />
       <Lightformer form="rect" intensity={.1} color="#132039" scale={[10, 1.5, 1]} position={[0, -1.5, 5]} />
     </Environment>
-    <group rotation={[.04, -.3, .02]}>
+    <group ref={sculpture} rotation={[.04, -.3, .02]}>
       <group ref={letter} position={[.1, 0, 0]}>
         <mesh position={[-.65, -.15, 0]} material={chrome}><capsuleGeometry args={[.28, 2.15, 12, 32]} /></mesh>
         <mesh position={[.06, .58, 0]} material={chrome}><torusGeometry args={[.71, .28, 24, 80]} /></mesh>
@@ -70,12 +76,11 @@ function Sculpture({ playing, onReady, onFailure }: { playing: boolean; onReady:
     </group>
     <ambientLight intensity={.5} />
     <directionalLight position={[-5, 7, 5]} intensity={3} color="#ffffff" />
-    <OrbitControls enableZoom={false} enablePan={false} enableDamping dampingFactor={.07} rotateSpeed={.4} minPolarAngle={Math.PI / 3} maxPolarAngle={Math.PI * .7} />
   </>;
 }
 
-export default function OrbitScene({ playing, onReady, onFailure }: { playing: boolean; onReady: () => void; onFailure: () => void }) {
+export default function OrbitScene({ playing, onReady, onFailure, rotation }: { playing: boolean; onReady: () => void; onFailure: () => void; rotation: MotionValue<number> }) {
   return <Canvas camera={{ position: [0, 0, 8.5], fov: 40 }} dpr={[1, 1.5]} frameloop={playing ? 'always' : 'demand'} gl={{ alpha: true, antialias: true, powerPreference: 'low-power' }} fallback={null}>
-    <Suspense fallback={null}><Sculpture playing={playing} onReady={onReady} onFailure={onFailure} /></Suspense>
+    <Suspense fallback={null}><Sculpture playing={playing} onReady={onReady} onFailure={onFailure} rotation={rotation} /></Suspense>
   </Canvas>;
 }

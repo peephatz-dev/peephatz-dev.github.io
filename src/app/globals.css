@@ -404,3 +404,17 @@ body:has(dialog[open]) { overflow: hidden; }
 .hero-scrim { background: linear-gradient(90deg,#edf4ffdf,#edf4ff55 42%,#edf4ff18 80%),linear-gradient(0deg,#edf3fc 0%,#edf3fc99 16%,#edf3fc22 60%); }
 .orbit-card { background: linear-gradient(135deg,#ffffffe8,#edf5ff96); border-color: #ffffff; box-shadow: inset 0 0 0 2px #ffffff99, 0 12px 28px #294c8b1c, 2px 3px 0 #93b0d14d; }
 @media (prefers-reduced-motion:reduce) { .sky-background img { animation: none; transform: none; will-change: auto; } }
+
+/* Native page scrolling is independent of all orbit gestures. */
+#work, #about, #links, #mobile-orbit, #mobile-projects { scroll-margin-top: 24px; }
+.orbit-links, .scene-frame, .orbit-drag { touch-action: pan-y; }
+.orbit-links { cursor: grab; }
+[data-dragging="true"] { cursor: grabbing; }
+.orbit-drag-offset { position: relative; height: 100%; }
+/* The sculpture has no interactive meshes; its parent handles optional dragging.
+   No canvas event layer should compete with native scrolling or nearby links. */
+.live-scene { pointer-events: none; }
+.project-dialog { touch-action: pan-y; -webkit-overflow-scrolling: touch; }
+@media (max-width: 800px) {
+  .orbit-drag-offset { display: contents; }
+}
