@@ -6,14 +6,14 @@
     --orbit-blue: #124de6;
     --orbit-rise: min(28vw, 13dvh);
     position: relative; display: flex; flex-direction: column; isolation: isolate;
-    --card-height: clamp(320px, 60svh, 640px);
+    --card-height: clamp(320px, 54svh, 640px);
     min-height: 100dvh; padding: max(17px,env(safe-area-inset-top)) 0 max(6px,env(safe-area-inset-bottom));
     overflow: clip;
     background: #a9d4f6; color: #142d50;
   }
   .cloud-atmosphere { position: absolute; inset: -20px; z-index: -2; pointer-events: none; }
-  .cloud-sky { position: absolute; inset: -3%; background: linear-gradient(#4d9bdb12,#b5d9f433), url('/assets/sky.webp') 50% 0 / auto 160% no-repeat; animation: cloud-sky-drift 65s ease-in-out infinite alternate; }
-  .cloud-sunlight { position: absolute; inset: 0; background: radial-gradient(ellipse at 85% 12%,#ffffff9c,transparent 50%),linear-gradient(0deg,#e0efff 0%,transparent 35%); }
+  .cloud-sky { position: absolute; inset: -3%; background: linear-gradient(#2685ce24,#b5d9f400 55%), url('/assets/sky.webp') 50% 0 / auto 125% no-repeat; animation: cloud-sky-drift 65s ease-in-out infinite alternate; }
+  .cloud-sunlight { position: absolute; inset: 0; background: radial-gradient(ellipse at 95% 4%,#ffffffd9,transparent 48%),linear-gradient(0deg,#edf3fc 0%,#e0efff33 28%,transparent 55%); }
   .cloud-bank { position: absolute; background: url('/assets/sky.webp') no-repeat; pointer-events: none; will-change: transform; }
   .cloud-bank-far { top: 14%; left: -60%; width: 175%; height: 48%; background-size: 180% auto; background-position: 100% 48%; opacity: .65; mask-image: radial-gradient(ellipse at 75% 55%,#000 10%,transparent 68%); animation: cloud-far-drift 48s ease-in-out infinite alternate; }
   .cloud-bank-middle { left: -35%; bottom: 10%; width: 170%; height: 55%; background-size: 220% auto; background-position: 0 32%; mask-image: linear-gradient(transparent,#000 35%,#000 70%,transparent); animation: cloud-middle-drift 32s ease-in-out infinite alternate; }
@@ -25,25 +25,26 @@
   .cloud-header-actions > * { width: 44px; height: 44px; display: grid; place-items: center; border: 1px solid #ffffffb8; border-radius: 50%; background: #edf6ff59; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
   .cloud-header-actions svg { width: 18px; height: 18px; }
   .cloud-header-actions a { background: var(--orbit-blue); color: white; border-color: #6d9aff; box-shadow: inset 0 1px 1px #ffffff75,0 4px 12px #123c8c20; }
-  .cloud-intro { position: relative; flex-shrink: 0; margin: 18px 8% 0; z-index: 2; pointer-events: none; }
-  .cloud-intro > p { font-size: 10px; margin: 0 0 7px; font-weight: 500; }
-  .cloud-intro > h1 { font-family: var(--font-display); font-size: clamp(28px,8.4vw,47px); font-weight: 700; line-height: .98; letter-spacing: -1.8px; margin: 0; }
+  .cloud-intro { position: relative; flex-shrink: 0; margin: 18px 7% 0; z-index: 2; pointer-events: none; }
+  .cloud-intro > p { display: flex; align-items: center; gap: 7px; font-size: 10px; margin: 0 0 16px; font-weight: 500; }
+  .cloud-intro > h1 { font-family: var(--font-display); font-size: clamp(32px,9.4vw,64px); font-weight: 700; line-height: .94; letter-spacing: -2.2px; margin: 0; }
   .cloud-orbit-guide { position: absolute; top: calc(var(--card-height) / 2 + var(--orbit-rise)); left: 50%; width: 200vw; height: min(56vw, 26dvh); border: 1px solid #ffffff90; border-radius: 50%; transform: translate(-50%,-50%); box-shadow: 0 1px 0 #4974a51c,inset 0 1px 0 #ffffff52; pointer-events: none; }
-  .cloud-wheel { position: relative; flex: 1 0 auto; min-height: calc(var(--card-height) + 30px); margin-top: 18px; padding-bottom: 30px; touch-action: pan-y; cursor: grab; z-index: 3; outline-offset: -7px; }
+  .cloud-wheel { position: relative; flex: 1 0 auto; min-height: calc(var(--card-height) + 30px); margin-top: 20px; padding-bottom: 24px; touch-action: pan-y; cursor: grab; z-index: 3; outline-offset: -7px; }
   .cloud-wheel[data-dragging="true"] { cursor: grabbing; }
-  .cloud-card { position: absolute; left: 50%; top: 0; width: 82vw; min-height: var(--card-height); height: auto; display: flex; flex-direction: column; padding: 8px; border-radius: 28px; border: 1px solid #ffffffed; background: linear-gradient(145deg,#f9fcffeb,#e8f2ffdb 70%,#dceafaef); box-shadow: inset 0 0 0 2px #ffffff5c,1px 3px 0 #8bacc655,0 22px 45px -12px #193b733d; will-change: transform; user-select: none; -webkit-user-select: none; }
-  .cloud-card.is-active { position: relative; box-shadow: inset 0 0 0 2px #ffffff8c,1px 3px 0 #8bacc655,0 24px 44px -12px #193b7352; }
-  .cloud-card-art { position: relative; flex: 1 0 clamp(100px,26svh,300px); min-height: 100px; max-height: 320px; overflow: hidden; border-radius: 21px 21px 12px 12px; }
+  .cloud-card { position: absolute; left: 50%; top: 0; width: 84vw; min-height: var(--card-height); height: auto; display: flex; flex-direction: column; padding: 7px; border-radius: 30px; border: 1px solid #ffffffed; background: linear-gradient(155deg,#fffffffa,#f2f8ffed 62%,#dcebf9ef); box-shadow: inset 0 0 0 2px #ffffff5c,1px 3px 0 #8bacc655,0 22px 45px -12px #193b733d; will-change: transform; user-select: none; -webkit-user-select: none; }
+  .cloud-card.is-active { position: relative; box-shadow: inset 0 0 0 2px #ffffff8c,0 2px 0 #9bb6d0,0 8px 12px -9px #17386c66,0 32px 48px -18px #193b7366; }
+  .cloud-card-art { position: relative; flex: 1 0 clamp(100px,23svh,300px); min-height: 100px; max-height: 320px; overflow: hidden; border-radius: 23px 23px 17px 17px; }
   .cloud-card .cloud-card-art > .project-art { width: 100%; height: 100%; border-radius: inherit; }
   .cloud-card-art .art-spark { display: none; }
   .cloud-card-number { position: absolute; left: 12px; top: 12px; display: grid; place-items: center; width: 30px; height: 30px; font-size: 10px; font-weight: 600; border: 1px solid #ffffff80; border-radius: 50%; color: #172c4a; background: #ffffffd9; }
-  .cloud-card-body { flex: 0 0 auto; padding: 17px 14px 10px; }
-  .cloud-card-type { color: #395b7b; font-size: 10px; display: block; margin-bottom: 7px; }
-  .cloud-card h2 { font-family: var(--font-display); font-size: clamp(23px,6.8vw,36px); line-height: 1.02; letter-spacing: -1.2px; font-weight: 700; margin: 0 0 10px; }
+  .cloud-card-body { flex: 0 0 auto; padding: 18px 17px 13px; }
+  .cloud-card-type { color: #395b7b; font-size: 10px; display: flex; align-items: center; gap: 6px; margin-bottom: 9px; }
+  .cloud-card-type::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--orbit-blue); box-shadow: 0 0 0 3px #124de60a; }
+  .cloud-card h2 { font-family: var(--font-display); font-size: clamp(25px,7.3vw,40px); line-height: 1.02; letter-spacing: -1.2px; font-weight: 700; margin: 0 0 10px; }
   .cloud-card p { font-size: 13px; line-height: 1.55; color: #3d536f; margin: 0 0 13px; }
   .cloud-card-impact { font-size: 10px; line-height: 1.4; color: #244d84; padding: 9px 0 12px; border-top: 1px solid #9cb9d24d; }
   .cloud-card-actions { display: flex; align-items: center; gap: 8px; }
-  .cloud-card-actions > a { display: flex; flex: 1; align-items: center; justify-content: space-between; min-height: 44px; padding: 12px 14px; border-radius: 50px; font-size: 12px; font-weight: 500; color: white; background: var(--orbit-blue); box-shadow: inset 0 1px 1px #ffffff66,0 4px 10px #204de61a; }
+  .cloud-card-actions > a { display: flex; flex: 1; align-items: center; justify-content: space-between; min-height: 44px; padding: 12px 14px; border-radius: 50px; font-size: 12px; font-weight: 500; color: white; background: linear-gradient(180deg,#2b6cff,#124de6); box-shadow: inset 0 1px 1px #ffffff88,0 4px 8px #204de626; }
   .cloud-card-actions > button { display: grid; place-items: center; width: 44px; height: 44px; flex: 0 0 44px; background: #f9fcffb3; border: 1px solid #b5cbe3; border-radius: 50%; }
   .cloud-card-actions svg { width: 18px; height: 18px; }
   .cloud-foreground { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
@@ -53,16 +54,16 @@
   .cloud-gesture > span,.cloud-gesture > a { display: inline-flex; align-items: center; gap: 6px; }
   .cloud-gesture > a { min-height: 44px; font-weight: 600; }
   .cloud-gesture svg { width: 17px; height: 17px; }
-  .cloud-progress-panel { display: flex; align-items: center; gap: 9px; padding: 6px; border: 1px solid #ffffffeb; border-radius: 50px; background: #f3f9ff9e; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: inset 0 1px 0 white,0 8px 25px #24477712; }
-  .cloud-step { width: 44px; height: 44px; flex: 0 0 44px; display: grid; place-items: center; border-radius: 50%; background: #f7fbff; border: 1px solid #aec5dd66; }
+  .cloud-progress-panel { display: flex; align-items: center; gap: 12px; padding: 9px; border: 1px solid #ffffffeb; border-radius: 24px; background: linear-gradient(120deg,#ffffffc9,#e9f4ff94); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: inset 0 1px 0 white,0 8px 25px #24477712; }
+  .cloud-step { box-shadow: inset 0 1px 0 #fff,0 3px 7px #2447770d; width: 44px; height: 44px; flex: 0 0 44px; display: grid; place-items: center; border-radius: 50%; background: #f7fbff; border: 1px solid #aec5dd66; }
   .cloud-step:disabled { opacity: .35; }
   .cloud-step svg { width: 17px; height: 17px; }
   .cloud-progress-copy { flex: 1; min-width: 0; }
   .cloud-progress-copy > div:first-child { display: flex; align-items: baseline; justify-content: space-between; gap: 4px; margin: 0 0 7px; }
-  .cloud-index { font-size: 17px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; animation: cloud-number-in .2s ease-out; }
+  .cloud-index { font-family: var(--font-display); font-size: 24px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; animation: cloud-number-in .2s ease-out; }
   .cloud-index > span { color: #4c6480; font-size: 10px; font-weight: 400; }
   .cloud-percentage { font-size: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: .25px; white-space: nowrap; font-variant-numeric: tabular-nums; }
-  .cloud-progress-track { height: 3px; border-radius: 3px; background: #7495b52e; overflow: hidden; }
+  .cloud-progress-track { height: 4px; border-radius: 3px; background: #7495b52e; overflow: hidden; }
   .cloud-progress-track > div { height: 100%; background: var(--orbit-blue); transform-origin: left; }
   .cloud-bottom { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-top: 2px; }
   .cloud-bottom > * { min-height: 44px; display: inline-flex; align-items: center; gap: 5px; font-size: 10px; background: transparent; padding: 0 3px; }
@@ -77,7 +78,7 @@
 }
 @media (max-width: 800px) and (orientation: portrait) and (max-height: 740px) {
 
-  .cloud-intro > h1 { font-size: 29px; }
+  .cloud-intro > h1 { font-size: clamp(32px,9.8vw,48px); }
   .cloud-intro > p { font-size: 9px; margin-bottom: 5px; }
   .cloud-card { border-radius: 24px; }
   .cloud-card-body { padding: 12px 11px 6px; }
@@ -91,10 +92,71 @@
   .mobile-cloud-orbit .cloud-bank,.mobile-cloud-orbit .cloud-sky,.mobile-cloud-orbit .cloud-index { animation: none; will-change: auto; }
 }
 @media (max-width: 800px) and (orientation: portrait) and (max-height: 620px) {
-  .cloud-intro > h1 { font-size: 24px; letter-spacing: -1px; }
+  .cloud-intro > h1 { font-size: 32px; letter-spacing: -1.6px; }
   .mobile-cloud-orbit { --orbit-rise: 14dvh; }
   .mobile-cloud-orbit { --card-height: 300px; }
   .cloud-card-art { flex-basis: 100px; }
   .cloud-card h2 { font-size: 21px; }
   .cloud-gesture { font-size: 8px; }
+}
+
+/* Cloud Observatory: the portrait edition uses chrome as a material,
+   clear editorial hierarchy, and quiet controls around the project artwork. */
+@media (max-width: 800px) and (orientation: portrait) {
+  .cloud-intro-dot { width: 5px; height: 5px; border-radius: 50%; background: #124de6; box-shadow: 0 0 0 4px #ffffff55; }
+  .cloud-intro-location { margin-left: auto; font-size: 9px; color: #395b7b; }
+  .cloud-intro-caption { display: flex; justify-content: space-between; gap: 12px; margin-top: 12px; padding-top: 10px; border-top: 1px solid #ffffffa8; font-size: 10px; color: #365777; }
+  .cloud-chrome-orbit { position: absolute; width: 39px; height: 39px; right: -4px; top: 25px; transform: rotate(-24deg); }
+  .cloud-chrome-orbit i { position: absolute; inset: 7px; border-radius: 50%; background: radial-gradient(circle at 32% 20%,white 2%,#e4f5ff 17%,#8eabca 42%,#344d71 49%,#c3ddf2 56%,#fff 70%,#7098c1 91%); box-shadow: inset -2px -2px 4px #557da9,2px 5px 8px #416c9c26; }
+  .cloud-chrome-orbit b { position: absolute; inset: 15px -7px; border: 3px solid #e9f6ff; border-top-color: #91aac1; border-bottom-color: #fff; border-radius: 50%; box-shadow: 0 1px 1px #486c94; }
+  .cloud-card-number { background: linear-gradient(145deg,#fff,#e1ebf3); border-color: white; box-shadow: 0 2px 5px #102d4b20; }
+  .cloud-card-art::after { content: ''; position: absolute; inset: 0; border: 1px solid #ffffff45; border-radius: inherit; pointer-events: none; }
+  .cloud-gesture { padding: 0 8px; }
+  .cloud-gesture > a svg { background: #ffffff85; border-radius: 50%; width: 25px; height: 25px; padding: 5px; }
+  .cloud-step:not(:disabled):last-child { color: white; border-color: #3174ef; background: linear-gradient(#3079ff,#124de6); box-shadow: inset 0 1px 0 #ffffff66,0 3px 8px #124de626; }
+  .cloud-progress-track > div { background: linear-gradient(90deg,#689eff,#124de6); }
+  .cloud-bottom { margin: 7px 5px 0; }
+  .cloud-bottom > * { font-size: 11px; }
+  .work-section { position: relative; padding-top: 76px; padding-bottom: 72px; background: radial-gradient(ellipse at 100% 10%,#dceaff66,transparent 40%); }
+  .work-section .section-kicker { display: flex; align-items: center; gap: 9px; font-size: 11px; }
+  .work-section .section-kicker::before { content: ''; width: 24px; height: 1px; background: #1550ed; }
+  .section-top h2, .about-copy h2 { font-size: clamp(28px,8.5vw,52px); line-height: 1.08; letter-spacing: -1.6px; }
+  .section-intro { font-size: 13px; line-height: 1.8; max-width: 32ch; margin-top: 22px; }
+  .work-toolbar { border-bottom: 0; padding: 0; margin: 27px 0; }
+  .filters { display: flex; flex-wrap: wrap; gap: 5px; }
+  .filter { min-height: 44px; padding: 10px 13px; border: 1px solid #d4dfec; border-radius: 50px; background: #ffffff70; font-size: 10px; }
+  .filter.active { color: white; background: #163965; border-color: #163965; box-shadow: inset 0 1px 0 #ffffff26; }
+  .filter.active span { color: white; background: #ffffff20; }
+  .project-grid { gap: 27px; }
+  .project-card { border: 1px solid white; border-radius: 26px; background: linear-gradient(150deg,#ffffff,#f5f9ff); box-shadow: 0 2px 0 #b4c8df50,0 15px 35px -18px #294c8b40; }
+  .project-card > .project-art { margin: 7px 7px 0; border-radius: 20px 20px 12px 12px; height: clamp(190px,58vw,300px); }
+  .project-body { padding: 24px; }
+  .project-body h3 { font-size: 27px; letter-spacing: -1px; }
+  .project-body > p { font-size: 13px; line-height: 1.8; }
+  .project-metric { background: #eaf1fb; padding: 10px 12px; border-radius: 9px; font-size: 11px; }
+  .project-bottom { align-items: center; }
+  .project-bottom > span { flex: 1; line-height: 1.6; }
+  .project-bottom button { gap: 12px; font-size: 12px; }
+  .project-bottom button svg { width: 32px; height: 32px; padding: 8px; background: #e7efff; border-radius: 50%; }
+  .community-feature { background: linear-gradient(145deg,#fff,#eef7f3); }
+  .community-feature > .project-body { padding: 24px; }
+  .about-section { gap: 42px; padding-top: 38px; padding-bottom: 76px; }
+  .about-monogram { color: #d4e4f5; text-shadow: 1px 1px 0 white,2px 3px 0 #7f9cba,4px 6px 0 #b4cbe2,7px 10px 20px #7193bc30; }
+  .about-tags span { padding: 9px 12px; font-size: 10px; box-shadow: 0 2px 0 #b4c8df30; }
+  .connect-section { position: relative; isolation: isolate; overflow: clip; background: #dcecff; border-radius: 30px; padding: 34px 25px; box-shadow: inset 0 0 0 3px #ffffff44,0 14px 35px -20px #294c8b44; }
+  .connect-section::before { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(0deg,#e3efffe6,#edf6ff80),url('/assets/sky.webp') center / cover; pointer-events: none; }
+  .connect-section h2 { font-size: clamp(28px,8vw,48px); }
+  .connect-section h2 > svg { display: none; }
+  .big-contact { border-radius: 50px; background: linear-gradient(#2b6cff,#124de6); border: 1px solid #3a7bff; box-shadow: inset 0 1px 0 #ffffff66,0 5px 12px #124de625; }
+  .linkedin-contact { border-top: 1px solid #a9c2e35c; margin-top: 5px; padding-top: 9px; }
+  .site-footer { padding-top: 9px; }
+}
+@media (max-width: 360px) and (orientation: portrait) {
+  .cloud-chrome-orbit { width: 35px; height: 35px; top: 33px; right: -3px; }
+  .cloud-chrome-orbit b { inset: 11px -5px; border-width: 2px; }
+  .cloud-chrome-orbit i { inset: 4px; }
+  .cloud-intro-location { font-size: 8px; }
+  .cloud-card-body { padding-left: 12px; padding-right: 12px; }
+  .cloud-bottom > * { font-size: 10px; }
+  .project-body, .community-feature > .project-body { padding: 20px; }
 }

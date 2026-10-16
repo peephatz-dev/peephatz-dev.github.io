@@ -134,7 +134,12 @@ export default function MobileCloudOrbit({ onProject }: { onProject: (id: string
       <a href="#mobile-orbit" className="cloud-wordmark" aria-label="Peeraphat home">peeraphat<span>.link</span><i /></a>
       <div className="cloud-header-actions"><button onClick={() => setPaused(value => !value)} disabled={!!reduced} aria-label={reduced ? 'Reduced motion enabled' : paused ? 'Play cloud motion' : 'Pause cloud motion'} aria-pressed={paused || !!reduced}>{paused || reduced ? <Play aria-hidden="true" /> : <Pause aria-hidden="true" />}</button><a href={`mailto:${EMAIL}`} aria-label="Email Peeraphat"><ArrowUpRight aria-hidden="true" /></a></div>
     </header>
-    <div className="cloud-intro"><p>Peeraphat Noiyaem / Selected work</p><h1>A little above<br/>the ordinary.</h1></div>
+    <div className="cloud-intro">
+      <p><span className="cloud-intro-dot" />Peeraphat Noiyaem <span className="cloud-intro-location">Bangkok, TH</span></p>
+      <h1>A little above<br/>the ordinary.</h1>
+      <span className="cloud-chrome-orbit" aria-hidden="true"><i /><b /></span>
+      <div className="cloud-intro-caption"><span>Ideas, made real.</span><span>{String(projects.length).padStart(2, '0')} projects in orbit</span></div>
+    </div>
     <div className="cloud-wheel" id="mobile-projects" role="region" aria-roledescription="carousel" aria-label="Selected projects. Swipe horizontally or use previous and next. Scroll vertically to continue."
       tabIndex={0} {...gestures}
       onKeyDown={event => { if (event.target !== event.currentTarget) return; if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) { event.preventDefault(); settle(event.key === 'Home' ? 0 : event.key === 'End' ? END : (active + (event.key === 'ArrowRight' ? 1 : -1)) * STEP); } }}>

@@ -33,3 +33,12 @@ Sky edit: Remove the chrome letter p, sphere, orbit rings, and their reflections
 Edited output: `/Users/nokia/.codex/generated_images/01a14025-63e4-7c22-a1ec-9dea3fbdfca1/exec-0f045d90-506e-42a8-9244-17b73349815f.png`. Optimized asset: `public/assets/sky.webp`.
 
 Scroll interaction updates are documented in `SCROLL-AUDIT.md`. The desktop sculpture uses the same horizontal gesture recognizer as the card wheel; Drei OrbitControls is removed so it cannot set touch-action:none or register a non-passive wheel listener. The decorative canvas does not receive pointer events.
+
+
+## Cloud Observatory portrait polish — 2026-10-16
+
+The portrait edition uses sky blue (#a9d4f6), ice (#edf3fc), glass white (#f5f9ff), chrome silver (#b4cbe2), ink (#142d50), and electric blue (#124de6). Syne carries the display hierarchy; DM Sans keeps descriptions and controls readable. The visual focus stays on original project artwork, with a small static chrome orbit echoing the desktop sculpture.
+
+The opening hierarchy is identity → editorial headline → floating artwork → navigation. Cards occupy 84vw, with an adaptive 54svh minimum and natural content height. This makes room for the scroll cue and progress controls without clipping long descriptions. Project sections use larger images, quieter framing, legible impact details, and a cloud-backed contact panel. All new section styling is portrait-scoped; desktop styling and interaction code are unchanged. No new assets, dependencies, continuous animation, or backdrop-filter regions were added.
+
+Validation: gesture tests (3), typecheck and production build pass. Browser checks confirmed native pan-y, project 2/7 at 17%, #about landing with roughly 44px clearance, no horizontal overflow and accessible card content at actual 320×567 and 390×844 CSS viewports. Physical iPhone Safari was not tested in this pass.
