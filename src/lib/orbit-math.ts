@@ -15,3 +15,9 @@ export function cardPosition(index: number, count: number, rotation: number, rad
   const angle = index * TAU / count - rotation;
   return { x: Math.sin(angle) * radiusX, z: Math.cos(angle) * radiusZ, angle };
 }
+export function finiteScrollProgress(scrollY: number, sectionTop: number, sectionHeight: number, viewportHeight: number) {
+  return Math.max(0, Math.min(1, (scrollY - sectionTop) / Math.max(1, sectionHeight - viewportHeight)));
+}
+export function finiteScrollActive(progress: number, count: number) {
+  return Math.min(count - 1, Math.floor(Math.max(0, Math.min(1, progress)) * count + .5));
+}

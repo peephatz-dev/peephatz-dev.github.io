@@ -2,11 +2,10 @@
 
 import { Component, useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import dynamic from 'next/dynamic';
-import { animate, useMotionValue, useMotionValueEvent, useReducedMotion } from 'framer-motion';
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Pause, Play, Mouse, Github, Mail, Layers, User } from 'lucide-react';
-import { useHorizontalGesture } from '@/hooks/useHorizontalGesture';
+import { useMotionValue, useReducedMotion } from 'framer-motion';
+import { ArrowLeft, ArrowRight, ArrowUpRight, Pause, Play, Github, Mail, Layers, User } from 'lucide-react';
 import { orbitLinks, type OrbitLink } from '@/lib/orbit-links';
-import { orbitState, snapOrbit, TAU, wrap } from '@/lib/orbit-math';
+import { finiteScrollActive, finiteScrollProgress, TAU } from '@/lib/orbit-math';
 import { orbitProjectDetails, type OrbitProjectDetail } from '@/lib/orbit-projects';
 import ProjectDetailOverlay from './ProjectDetailOverlay';
 
@@ -18,33 +17,19 @@ class SceneBoundary extends Component<{children:ReactNode;onFailure:()=>void},{f
 }
 const icons={github:Github,contact:Mail,modhew:Layers,met:Layers,'sam-hao':User};
 function LinkIcon({link}:{link:OrbitLink}){const Icon=icons[link.id as keyof typeof icons];return <Icon aria-hidden="true"/>;}
-const STEP=TAU/orbitLinks.length;
 
 /** Shared accessible controller; all visible 3D panels use this same angular value. */
 export default function SpatialOrbit(){
   const reduced=useReducedMotion();
-  const root=useRef<HTMLElement>(null);const surface=useRef<HTMLDivElement>(null);
-  const progress=useRef<HTMLDivElement>(null);const percent=useRef<HTMLSpanElement>(null);const lap=useRef<HTMLSpanElement>(null);
-  const rotation=useMotionValue(0);const dragStart=useRef(0);const activeRef=useRef(0);
-  const animation=useRef<ReturnType<typeof animate>|null>(null);const target=useRef(0);const clickBlockedUntil=useRef(0);
+  const root=useRef<HTMLDivElement>(null);const surface=useRef<HTMLDivElement>(null);const scrollSection=useRef<HTMLElement>(null);
+  const progress=useRef<HTMLDivElement>(null);const percent=useRef<HTMLSpanElement>(null);
+  const rotation=useMotionValue(0);
   const [active,setActive]=useState(0);const [portrait,setPortrait]=useState(false);const [visible,setVisible]=useState(true);
-  const [simple,setSimple]=useState(false);const [paused,setPaused]=useState(false);const [wheel,setWheel]=useState(false);const [failed,setFailed]=useState(false);const [ready,setReady]=useState(false);const [mounted,setMounted]=useState(false);
+  const [simple,setSimple]=useState(false);const [paused,setPaused]=useState(false);const [failed,setFailed]=useState(false);const [ready,setReady]=useState(false);const [mounted,setMounted]=useState(false);
   const [selected,setSelected]=useState<OrbitProjectDetail|null>(null);
   const selectedRef=useRef<OrbitProjectDetail|null>(null);
   const origin=useRef<HTMLElement|null>(null);
   const playing=!reduced&&!paused&&visible;
-  const settle=useCallback((value:number,velocity=0)=>{
-    animation.current?.stop(); target.current=snapOrbit(value,0,orbitLinks.length);
-    if(reduced)rotation.set(target.current);
-    else animation.current=animate(rotation,target.current,{type:'spring',stiffness:130,damping:25,mass:1,velocity,restDelta:.0001});
-  },[reduced,rotation]);
-  useMotionValueEvent(rotation,'change',value=>{
-    const state=orbitState(value,orbitLinks.length);
-    if(state.active!==activeRef.current){activeRef.current=state.active;setActive(state.active);}
-    if(percent.current)percent.current.textContent=String(Math.floor(state.percent)).padStart(2,'0');
-    if(lap.current)lap.current.textContent=String(state.revolution);
-    if(progress.current){progress.current.style.setProperty('--cycle',`${state.percent}%`);progress.current.setAttribute('aria-valuenow',String(Math.floor(state.percent)));progress.current.setAttribute('aria-valuetext',`${Math.floor(state.percent)} percent of cycle, revolution ${state.revolution}`);}
-  });
   const closeProject=useCallback((fromHistory=false)=>{
     setSelected(null);
     selectedRef.current=null;
@@ -53,7 +38,6 @@ export default function SpatialOrbit(){
     window.setTimeout(()=>origin.current?.focus({preventScroll:true}),30);
   },[]);
   const openProject=useCallback((index:number, fromHash=false)=>{
-    if(performance.now()<clickBlockedUntil.current)return;
     const detail=orbitProjectDetails[index];
     if(!detail)return;
     origin.current=document.activeElement as HTMLElement|null;
@@ -78,61 +62,55 @@ export default function SpatialOrbit(){
     };
     window.addEventListener('popstate',handlePopState);
     if(typeof WebGL2RenderingContext==='undefined')setFailed(true);
-    return()=>{media.removeEventListener('change',resize);observer.disconnect();document.removeEventListener('visibilitychange',update);window.removeEventListener('popstate',handlePopState);animation.current?.stop();};
+    return()=>{media.removeEventListener('change',resize);observer.disconnect();document.removeEventListener('visibilitychange',update);window.removeEventListener('popstate',handlePopState);};
   },[closeProject,openProject]);
-  const gestures=useHorizontalGesture({
-    onStart:()=>{animation.current?.stop();dragStart.current=rotation.get();clickBlockedUntil.current=Infinity;},
-    onMove:({dx,width})=>rotation.set(dragStart.current-dx/width*(portrait?2.5:4.2)),
-    onEnd:({velocity,width,cancelled})=>{
-      clickBlockedUntil.current=performance.now()+400;
-      const speed=-velocity/width*(portrait?2.5:4.2);
-      settle(snapOrbit(rotation.get(),speed,orbitLinks.length,cancelled),cancelled?0:speed);
-    },
-  });
-  // Opt-in, scene-scoped desktop wheel. No document wheel listener. Escape exits.
   useEffect(()=>{
-    const element=surface.current;if(!wheel||portrait||!element)return;
-    let timeout:ReturnType<typeof setTimeout>|undefined;
-    const handler=(event:WheelEvent)=>{
-      if(event.ctrlKey||event.metaKey||(event.target as Element).closest('a,button,input'))return;
-      event.preventDefault();animation.current?.stop();
-      const unit=event.deltaMode===1?16:event.deltaMode===2?element.clientHeight:1;
-      rotation.set(rotation.get()+Math.max(-130,Math.min(130,(Math.abs(event.deltaX)>Math.abs(event.deltaY)?event.deltaX:event.deltaY)*unit))*.003);
-      clearTimeout(timeout);timeout=setTimeout(()=>settle(rotation.get()),140);
+    const section=scrollSection.current;if(!section)return;
+    let frame=0;
+    const update=()=>{
+      frame=0;
+      const value=finiteScrollProgress(window.scrollY,section.offsetTop,section.offsetHeight,window.innerHeight);
+      rotation.set(value*TAU);
+      const next=finiteScrollActive(value,orbitLinks.length);
+      setActive(current=>current===next?current:next);
+      const percentValue=Math.round(value*100);
+      if(percent.current)percent.current.textContent=String(percentValue).padStart(2,'0');
+      if(progress.current){progress.current.style.setProperty('--cycle',`${percentValue}%`);progress.current.setAttribute('aria-valuenow',String(percentValue));progress.current.setAttribute('aria-valuetext',`${percentValue} percent through the orbit`);}
     };
-    element.addEventListener('wheel',handler,{passive:false});
-    return()=>{element.removeEventListener('wheel',handler);clearTimeout(timeout);};
-  },[wheel,portrait,rotation,settle]);
-  const activate=useCallback((index:number)=>{
-    if(performance.now()<clickBlockedUntil.current)return;
-    openProject(index);
-  },[openProject]);
+    const onScroll=()=>{if(!frame)frame=requestAnimationFrame(update);};
+    update();window.addEventListener('scroll',onScroll,{passive:true});window.addEventListener('resize',onScroll,{passive:true});
+    return()=>{window.removeEventListener('scroll',onScroll);window.removeEventListener('resize',onScroll);if(frame)cancelAnimationFrame(frame);};
+  },[rotation]);
+  const scrollToProgress=useCallback((value:number)=>{
+    const section=scrollSection.current;if(!section)return;
+    const range=Math.max(1,section.offsetHeight-window.innerHeight);
+    window.scrollTo({top:section.offsetTop+Math.max(0,Math.min(1,value))*range,behavior:reduced?'auto':'smooth'});
+  },[reduced]);
+  const activate=useCallback((index:number)=>openProject(index),[openProject]);
   const onReady=useCallback(()=>setReady(true),[]);const onFailure=useCallback(()=>setFailed(true),[]);
   const current=orbitLinks[active];
-  return <section className={`spatial-orbit ${playing?'':'spatial-paused'} ${ready&&!failed&&!simple?'spatial-ready':''}`} id="home" ref={root} aria-labelledby="spatial-name">
+  return <section className="orbit-scroll-section" ref={scrollSection} id="home"><div className={`spatial-orbit ${playing?'':'spatial-paused'} ${ready&&!failed&&!simple?'spatial-ready':''}`} ref={root} aria-labelledby="spatial-name">
     <div className="spatial-sky" aria-hidden="true"/><div className="spatial-cloud spatial-cloud-back" aria-hidden="true"/>
     <header className="spatial-header"><a href="#home" className="spatial-wordmark">peeraphat<span>.link</span><i/></a><nav aria-label="Main navigation"><a href="#work">Projects</a><a href="#about">About</a></nav><button className="spatial-motion" onClick={()=>setPaused(!paused)} aria-label={reduced?'Reduced motion enabled':paused?'Play background motion':'Pause background motion'} aria-pressed={paused||!!reduced} disabled={!!reduced}>{paused||reduced?<Play/>:<Pause/>}</button></header>
     <div className="spatial-title"><span>Welcome to my little universe</span><h1 id="spatial-name">PEERAPHAT</h1><p>Developer / Builder / Dreamer</p><span className="spatial-badge">KMUTT / DSI</span></div>
-    <div ref={surface} className="spatial-surface" id="links" tabIndex={0} role="region" aria-roledescription="carousel" aria-label="Personal links. Drag horizontally, or use arrow keys. Vertical scrolling stays native." {...gestures}
-      onKeyDown={event=>{if(event.target!==event.currentTarget)return;if(event.key==='Escape'){setWheel(false);return;}if(['ArrowLeft','ArrowRight','Home','End'].includes(event.key)){event.preventDefault();const cycle=Math.floor(target.current/TAU)*TAU;settle(event.key==='Home'?cycle:event.key==='End'?cycle+(orbitLinks.length-1)*STEP:target.current+(event.key==='ArrowRight'?STEP:-STEP));}}}>
+    <div ref={surface} className="spatial-surface" id="links" role="region" aria-roledescription="carousel" aria-label="Personal links. Scroll vertically to explore all five links.">
       <StaticOrbitFallback active={active} onOpen={openProject}/>
       {mounted&&!failed&&!simple&&<div className={`spatial-webgl ${ready?'is-ready':''}`} aria-hidden={!ready}><SceneBoundary onFailure={onFailure}><Scene links={orbitLinks} rotation={rotation} portrait={portrait} playing={playing} onActivate={activate} onReady={onReady} onFailure={onFailure}/></SceneBoundary></div>}
     </div>
     <div className="spatial-cloud spatial-cloud-front" aria-hidden="true"/>
     <div className="spatial-dock">
-      <div className="spatial-hints"><span>Drag to discover</span><a href="#work">Scroll to explore <ArrowDown aria-hidden="true"/></a></div>
       <div className="spatial-console">
-        <button onClick={()=>settle(target.current-STEP)} aria-label="Previous link"><ArrowLeft aria-hidden="true"/></button>
+        <button onClick={()=>scrollToProgress((active-1)/4)} disabled={active===0} aria-label="Previous link"><ArrowLeft aria-hidden="true"/></button>
         <div className="spatial-meter"><div><strong>{String(active+1).padStart(2,'0')}<small> / {String(orbitLinks.length).padStart(2,'0')}</small></strong><span><span ref={percent}>00</span>% cycle</span></div><div ref={progress} className="spatial-progress" role="progressbar" aria-label="Current orbit cycle" aria-valuemin={0} aria-valuemax={100} aria-valuenow={0}/></div>
-        <button onClick={()=>settle(target.current+STEP)} aria-label="Next link"><ArrowRight aria-hidden="true"/></button>
+        <button onClick={()=>active===orbitLinks.length-1?scrollToProgress(1):scrollToProgress((active+1)/4)} aria-label={active===orbitLinks.length-1?'Continue to Projects':'Next link'}><ArrowRight aria-hidden="true"/></button>
       </div>
       <button className="spatial-active-link" type="button" onClick={()=>openProject(active)}>View {current.title}<ArrowUpRight aria-hidden="true"/></button>
-      <div className="spatial-options"><span>Revolution <span ref={lap}>0</span></span><button className="spatial-wheel-toggle" onClick={()=>{setWheel(!wheel);settle(rotation.get());}} aria-pressed={wheel}><Mouse aria-hidden="true"/>Wheel {wheel?'on · Esc to exit':'off'}</button><button onClick={()=>setSimple(!simple)} aria-pressed={simple}>{simple?'Show 3D':'Simple view'}</button></div>
+      <div className="spatial-options"><span>Scroll journey</span><button onClick={()=>setSimple(!simple)} aria-pressed={simple}>{simple?'Show 3D':'Simple view'}</button></div>
     </div>
-    <nav className="spatial-link-list" aria-label="All orbit destinations">{orbitLinks.map((link,index)=><button key={link.id} type="button" aria-current={active===index?'true':undefined} onClick={()=>openProject(index)} onFocus={()=>{const currentStep=Math.round(rotation.get()/STEP);const diff=wrap(index-wrap(currentStep,orbitLinks.length)+orbitLinks.length/2,orbitLinks.length)-orbitLinks.length/2;settle((currentStep+diff)*STEP);}}><LinkIcon link={link}/><span>{link.title}</span></button>)}</nav>
+    <nav className="spatial-link-list" aria-label="All orbit destinations">{orbitLinks.map((link,index)=><button key={link.id} type="button" aria-current={active===index?'true':undefined} onClick={()=>openProject(index)} onFocus={()=>scrollToProgress(index/orbitLinks.length)}><LinkIcon link={link}/><span>{link.title}</span></button>)}</nav>
     <p className="sr-only" role="status" aria-live="polite">Link {active+1} of {orbitLinks.length}: {current.title}</p>
     <ProjectDetailOverlay project={selected} onClose={closeProject}/>
-  </section>;
+  </div></section>;
 }
 
 function StaticOrbitFallback({ active, onOpen }: { active: number; onOpen: (index: number) => void }) {

@@ -1,5 +1,6 @@
-/* The scene and controls are one coordinate-independent, native-scrolling hero. */
-.spatial-orbit { position: relative; isolation: isolate; overflow: clip; min-height: 100svh; padding: 0 0 24px; background: #c9e4fa; color: #173255; }
+/* Native document scrolling drives one finite orbit cycle while the hero stays pinned. */
+.orbit-scroll-section { position: relative; height: 500dvh; }
+.spatial-orbit { position: sticky; top: 0; height: 100dvh; isolation: isolate; overflow: clip; min-height: 100svh; padding: 0 0 24px; background: #c9e4fa; color: #173255; }
 .spatial-sky { position: absolute; inset: -4%; z-index: -3; background: url('/assets/sky.webp') center 45% / cover; animation: spatial-sky-drift 70s ease-in-out infinite alternate; }
 .spatial-orbit::after { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(180deg,#cce7ff22 30%,#ecf5ff55 65%,#edf3fc 100%); }
 .spatial-header { position: relative; display: flex; align-items: center; gap: 24px; height: 86px; padding: 0 5%; z-index: 4; }
