@@ -16,7 +16,16 @@ export default function ProjectDetailOverlay({ project, onClose }: ProjectDetail
 
   useEffect(() => {
     if (!project) return;
-    const previousOverflow = document.body.style.overflow;
+    const scrollY = window.scrollY;
+    const previous = {
+      position: document.body.style.position,
+      top: document.body.style.top,
+      width: document.body.style.width,
+      overflow: document.body.style.overflow,
+    };
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = '100%';
     document.body.style.overflow = 'hidden';
     const focusTimer = window.setTimeout(() => closeButton.current?.focus(), 30);
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -41,7 +50,8 @@ export default function ProjectDetailOverlay({ project, onClose }: ProjectDetail
     document.addEventListener('keydown', handleKeyDown);
     return () => {
       window.clearTimeout(focusTimer);
-      document.body.style.overflow = previousOverflow;
+      Object.assign(document.body.style, previous);
+      window.scrollTo(0, scrollY);
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, [project, onClose]);
@@ -51,6 +61,7 @@ export default function ProjectDetailOverlay({ project, onClose }: ProjectDetail
     <div className="project-reveal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
       <div ref={panel} className="project-reveal" role="dialog" aria-modal="true" aria-labelledby="project-reveal-title" aria-describedby="project-reveal-overview">
         <button ref={closeButton} className="project-reveal-close" type="button" onClick={() => onClose()} aria-label="Close project details"><X aria-hidden="true" /></button>
+        <div className="project-detail-scroll">
         <div className="project-reveal-grid">
           <div className="project-reveal-visual">
             <span className="project-reveal-number">{project.number} / ORBIT</span>
@@ -69,6 +80,7 @@ export default function ProjectDetailOverlay({ project, onClose }: ProjectDetail
             {project.related && <div className="project-reveal-related"><span className="project-reveal-section-label">Related work</span>{project.related.map((item) => <div key={item.title}><strong>{item.title}</strong><p>{item.description}</p>{item.href && <a href={item.href} target="_blank" rel="noopener noreferrer">Open verified link <ArrowUpRight aria-hidden="true" /></a>}</div>)}</div>}
             {project.contactMethods && <div className="project-reveal-contact">{project.contactMethods.map((method) => <a key={method.label} href={method.href} target={method.href.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer"><span>{method.label}</span><strong>{method.value}</strong><ArrowUpRight aria-hidden="true" /></a>)}</div>}
           </div>
+        </div>
         </div>
         {project.href && <a className="project-reveal-cta" href={project.href} target="_blank" rel="noopener noreferrer">{project.hrefLabel ?? 'Visit project'}<ExternalLink aria-hidden="true" /></a>}
       </div>

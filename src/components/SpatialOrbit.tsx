@@ -30,6 +30,7 @@ export default function SpatialOrbit(){
   const [active,setActive]=useState(0);const [portrait,setPortrait]=useState(false);const [visible,setVisible]=useState(true);
   const [simple,setSimple]=useState(false);const [paused,setPaused]=useState(false);const [wheel,setWheel]=useState(false);const [failed,setFailed]=useState(false);const [ready,setReady]=useState(false);const [mounted,setMounted]=useState(false);
   const [selected,setSelected]=useState<OrbitProjectDetail|null>(null);
+  const selectedRef=useRef<OrbitProjectDetail|null>(null);
   const origin=useRef<HTMLElement|null>(null);
   const playing=!reduced&&!paused&&visible;
   const settle=useCallback((value:number,velocity=0)=>{
@@ -46,16 +47,19 @@ export default function SpatialOrbit(){
   });
   const closeProject=useCallback((fromHistory=false)=>{
     setSelected(null);
+    selectedRef.current=null;
     if(!fromHistory&&history.state?.orbitDetail)history.back();
+    else if(!fromHistory&&location.hash.startsWith('#project-'))history.replaceState(null,'',`${location.pathname}${location.search}`);
     window.setTimeout(()=>origin.current?.focus({preventScroll:true}),30);
   },[]);
-  const openProject=useCallback((index:number)=>{
+  const openProject=useCallback((index:number, fromHash=false)=>{
     if(performance.now()<clickBlockedUntil.current)return;
     const detail=orbitProjectDetails[index];
     if(!detail)return;
     origin.current=document.activeElement as HTMLElement|null;
+    selectedRef.current=detail;
     setSelected(detail);
-    if(history.state?.orbitDetail!==detail.id)history.pushState({orbitDetail:detail.id},'',`#project-${detail.id}`);
+    if(!fromHash&&history.state?.orbitDetail!==detail.id)history.pushState({orbitDetail:detail.id},'',`#project-${detail.id}`);
   },[]);
   useEffect(()=>{
     setMounted(true);
@@ -63,11 +67,19 @@ export default function SpatialOrbit(){
     let inView=true;const update=()=>setVisible(inView&&!document.hidden);
     const observer=new IntersectionObserver(([entry])=>{inView=entry.isIntersecting;update();});if(root.current)observer.observe(root.current);
     document.addEventListener('visibilitychange',update);
-    const handlePopState=()=>{if(selected)closeProject(true);};
+    const hashProject=location.hash.match(/^#project-(.+)$/)?.[1];
+    const hashIndex=hashProject?orbitProjectDetails.findIndex((project)=>project.id===hashProject):-1;
+    if(hashIndex>=0)openProject(hashIndex,true);
+    const handlePopState=()=>{
+      const nextProject=location.hash.match(/^#project-(.+)$/)?.[1];
+      const nextIndex=nextProject?orbitProjectDetails.findIndex((project)=>project.id===nextProject):-1;
+      if(nextIndex>=0)openProject(nextIndex,true);
+      else if(selectedRef.current)closeProject(true);
+    };
     window.addEventListener('popstate',handlePopState);
     if(typeof WebGL2RenderingContext==='undefined')setFailed(true);
     return()=>{media.removeEventListener('change',resize);observer.disconnect();document.removeEventListener('visibilitychange',update);window.removeEventListener('popstate',handlePopState);animation.current?.stop();};
-  },[selected,closeProject]);
+  },[closeProject,openProject]);
   const gestures=useHorizontalGesture({
     onStart:()=>{animation.current?.stop();dragStart.current=rotation.get();clickBlockedUntil.current=Infinity;},
     onMove:({dx,width})=>rotation.set(dragStart.current-dx/width*(portrait?2.5:4.2)),
