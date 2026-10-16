@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import './mobile-orbit.css';
+import './spatial-orbit.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://peephatz-dev.github.io'),

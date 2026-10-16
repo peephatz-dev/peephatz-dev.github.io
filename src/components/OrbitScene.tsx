@@ -4,15 +4,28 @@ import { Suspense, useEffect, useMemo, useRef } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Environment, Lightformer } from '@react-three/drei';
 import type { MotionValue } from 'framer-motion';
-import { Group, MeshStandardMaterial, MathUtils } from 'three';
+import { Group, MeshPhysicalMaterial, MathUtils } from 'three';
 
 function Sculpture({ playing, onReady, onFailure, rotation }: { playing: boolean; onReady: () => void; onFailure: () => void; rotation: MotionValue<number> }) {
   const sculpture = useRef<Group>(null);
   const rings = useRef<Group>(null);
   const letter = useRef<Group>(null);
   const { invalidate, gl } = useThree();
-  const chrome = useMemo(() => new MeshStandardMaterial({ color: '#f0f5ff', metalness: 1, roughness: .12, envMapIntensity: 1.5 }), []);
-  useEffect(() => () => { chrome.dispose(); }, [chrome]);
+  const bubble = useMemo(() => new MeshPhysicalMaterial({
+    color: '#f8fdff',
+    metalness: 0,
+    roughness: .08,
+    transmission: .72,
+    thickness: .06,
+    ior: 1.33,
+    iridescence: .8,
+    iridescenceIOR: 1.3,
+    iridescenceThicknessRange: [100, 400],
+    clearcoat: .4,
+    clearcoatRoughness: .08,
+    envMapIntensity: .35,
+  }), []);
+  useEffect(() => () => { bubble.dispose(); }, [bubble]);
   useEffect(() => rotation.on('change', value => {
     if (sculpture.current) sculpture.current.rotation.y = -.3 + value;
     invalidate();
@@ -39,22 +52,20 @@ function Sculpture({ playing, onReady, onFailure, rotation }: { playing: boolean
   });
   return <>
     <Environment resolution={128} frames={1} background={false}>
-      <color attach="background" args={['#778ca9']} />
-      <Lightformer form="rect" intensity={3} color="white" scale={[9, 1.5, 1]} position={[0, 2, 6]} />
-      <Lightformer form="rect" intensity={5} color="white" scale={[8, 3, 1]} position={[-4, 4, 4]} rotation-y={.5} />
-      <Lightformer form="rect" intensity={2} color="#d9eeff" scale={[3, 8, 1]} position={[4, 1, -2]} rotation-y={-Math.PI / 2} />
-      <Lightformer form="ring" intensity={3} color="white" scale={5} position={[0, -3, 4]} rotation-x={.5} />
-      <Lightformer form="rect" intensity={3} color="#f1f7ff" scale={[1, 8, 1]} position={[-3, 0, 5]} rotation-z={-.35} />
-      <Lightformer form="rect" intensity={.1} color="#132039" scale={[10, 1.5, 1]} position={[0, -1.5, 5]} />
+      <color attach="background" args={['#eaf8ff']} />
+      <Lightformer form="rect" intensity={2.2} color="#ffffff" scale={[9, 4, 1]} position={[0, 3, 6]} />
+      <Lightformer form="rect" intensity={2.5} color="#d9f7ff" scale={[7, 4, 1]} position={[-4, 4, 3]} rotation-y={.5} />
+      <Lightformer form="rect" intensity={1.8} color="#ffe5f7" scale={[3, 7, 1]} position={[4, 1, -2]} rotation-y={-Math.PI / 2} />
+      <Lightformer form="ring" intensity={1.8} color="#ffffff" scale={5} position={[0, -3, 4]} rotation-x={.5} />
     </Environment>
     <group ref={sculpture} rotation={[.04, -.3, .02]}>
       <group ref={letter} position={[.1, 0, 0]}>
-        <mesh position={[-.65, -.15, 0]} material={chrome}><capsuleGeometry args={[.28, 2.15, 12, 32]} /></mesh>
-        <mesh position={[.06, .58, 0]} material={chrome}><torusGeometry args={[.71, .28, 24, 80]} /></mesh>
+        <mesh position={[-.65, -.15, 0]} material={bubble}><capsuleGeometry args={[.28, 2.15, 12, 32]} /></mesh>
+        <mesh position={[.06, .58, 0]} material={bubble}><torusGeometry args={[.71, .28, 24, 80]} /></mesh>
       </group>
       <mesh>
         <sphereGeometry args={[2.1, 56, 40]} />
-        <meshPhysicalMaterial color="#e7f4ff" opacity={.16} transparent depthWrite={false} roughness={.025} metalness={.1} ior={1.5} envMapIntensity={2} clearcoat={1} clearcoatRoughness={.02} />
+        <meshPhysicalMaterial color="#eafaff" opacity={.22} transparent depthWrite={false} roughness={.08} metalness={0} transmission={.72} thickness={.05} ior={1.33} iridescence={.8} iridescenceIOR={1.3} iridescenceThicknessRange={[100, 400]} envMapIntensity={.35} clearcoat={.4} clearcoatRoughness={.08} />
       </mesh>
       <mesh renderOrder={2}>
         <sphereGeometry args={[2.108, 48, 32]} />
@@ -66,16 +77,16 @@ function Sculpture({ playing, onReady, onFailure, rotation }: { playing: boolean
           void main(){ vec3 n=normalize(vNormal); float f=pow(1.0-max(dot(n,normalize(vView)),0.0),3.0); float glint=pow(max(dot(n,normalize(vec3(-.5,.65,1.0))),0.0),75.0); gl_FragColor=vec4(mix(vec3(.52,.72,1.0),vec3(1.0),f+glint),.025+f*.46+glint*.55); }
         `}/>
       </mesh>
-      <mesh material={chrome}><torusGeometry args={[2.1, .018, 8, 128]} /></mesh>
-      <mesh rotation={[Math.PI / 2, 0, 0]} material={chrome}><torusGeometry args={[2.115, .025, 10, 128]} /></mesh>
+      <mesh material={bubble}><torusGeometry args={[2.1, .018, 8, 128]} /></mesh>
+      <mesh rotation={[Math.PI / 2, 0, 0]} material={bubble}><torusGeometry args={[2.115, .025, 10, 128]} /></mesh>
       <group ref={rings}>
-        <mesh rotation={[1.1, .2, -.35]} material={chrome}><torusGeometry args={[2.68, .028, 10, 128]} /></mesh>
-        <mesh rotation={[.55, -.45, .9]} material={chrome}><torusGeometry args={[2.5, .019, 8, 128]} /></mesh>
-        <mesh position={[2.43, .92, .25]} material={chrome}><sphereGeometry args={[.095, 16, 12]} /></mesh>
+        <mesh rotation={[1.1, .2, -.35]} material={bubble}><torusGeometry args={[2.68, .028, 10, 128]} /></mesh>
+        <mesh rotation={[.55, -.45, .9]} material={bubble}><torusGeometry args={[2.5, .019, 8, 128]} /></mesh>
+        <mesh position={[2.43, .92, .25]} material={bubble}><sphereGeometry args={[.095, 16, 12]} /></mesh>
       </group>
     </group>
-    <ambientLight intensity={.5} />
-    <directionalLight position={[-5, 7, 5]} intensity={3} color="#ffffff" />
+    <ambientLight intensity={.8} color="#e7f8ff" />
+    <directionalLight position={[-5, 7, 5]} intensity={1.6} color="#ffffff" />
   </>;
 }
 
